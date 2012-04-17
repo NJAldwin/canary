@@ -16,7 +16,7 @@ Error:
 }
 Up:
 {
-    "lastdown": "2012-04-17T16:21:04.732000", 
+    "lastchange": "2012-04-17T16:21:04.732000", 
     "motd": "Nerd.Nu", 
     "server": "p.nerd.nu", 
     "status": "up", 
@@ -24,7 +24,7 @@ Up:
 }
 Down:
 {
-    "lastup": "2012-04-17T16:28:04.185000", 
+    "lastchange": "2012-04-17T16:28:04.185000", 
     "status": "down", 
     "timestamp": "2012-04-17T16:28:17.935000"
 }
