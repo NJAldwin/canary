@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template, request
 import fjson
 import settings
 import serverutils
@@ -6,9 +6,9 @@ from urlparse import urlparse
 
 app = fjson.make_json_app(__name__)
 
-@app.route("/")
+@app.route('/')
 def index():
-    return "Index"
+    return render_template('index.html')
 
 @app.route("/s/<server>")
 def server(server):

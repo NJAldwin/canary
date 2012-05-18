@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block head %}
+<script src="{{ url_for('static', filename='jquery.timeago.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
+{% endblock %}
+{% block body %}
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+    <h1>Minecraft status</h1>
+    <p><label for="server">Server: </label><input type="text" name="server" value=""> <a href="#" id="golink">[get info]</a></p>
+    <p><span id="result"></span></p>
+{% endblock %}
