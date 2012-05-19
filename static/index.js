@@ -3,6 +3,7 @@ $(function() {
     var server = "";
     var t;
     function getData() {
+        $('a#golink').html("[...]");
         $.getJSON($SCRIPT_ROOT + '/s/' + server, {},
                   function(data) {
                       if(data.error) {
@@ -21,6 +22,7 @@ $(function() {
                       }
                       $("#result").html(str);
                       jQuery("abbr.timeago").timeago();
+                      $('a#golink').html("[get info]");
 
                       t = setTimeout(getData, TIME_BETWEEN);
                   });
