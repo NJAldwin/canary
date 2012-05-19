@@ -10,4 +10,4 @@ STORE_DIR = "servers"
 TIMEOUT = 10 # seconds
 
 # Minimum amount of time between checks
-TIME_BETWEEN = 10 # seconds
+TIME_BETWEEN = 60 # seconds

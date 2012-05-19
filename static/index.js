@@ -1,6 +1,9 @@
 $(function() {
-    $('a#golink').bind('click', function() {
-        $.getJSON($SCRIPT_ROOT + '/s/' + $('input[name="server"]').val(), {},
+    var TIME_BETWEEN = 30 * 1000; // ms
+    var server = "";
+    var t;
+    function getData() {
+        $.getJSON($SCRIPT_ROOT + '/s/' + server, {},
                   function(data) {
                       if(data.error) {
                           str = "there was an error!";
@@ -18,8 +21,16 @@ $(function() {
                       }
                       $("#result").html(str);
                       jQuery("abbr.timeago").timeago();
+
+                      t = setTimeout(getData, TIME_BETWEEN);
                   });
         return false;
+    }
+
+    $('a#golink').bind('click', function() {
+        clearTimeout(t);
+        server = $('input[name="server"]').val();
+        getData();
     });
     jQuery("abbr.timeago").timeago();
 });
