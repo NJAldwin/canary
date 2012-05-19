@@ -8,9 +8,11 @@
     <script type=text/javascript>
       var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css') }}" />
     {% block head %}{% endblock %}
   </head>
   <body>
     {% block body %}{% endblock %}
+    <div id="foot"><a href="https://github.com/NJAldwin/canary">Canary</a> by Nick Aldwin</div>
   </body>
 </html>
