@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{
+      url_for('static', filename='jquery-1.7.2.min.js') }}">\x3C/script>')</script>
+    <script type=text/javascript>
+      var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='site.css') }}" />
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    {% block body %}{% endblock %}
+    <div id="foot"><a href="https://github.com/NJAldwin/canary">Canary v0.1</a> by Nick Aldwin</div>
+  </body>
+</html>

@@ -2,6 +2,7 @@ want to keep track of:
 if up:
  - motd
  - number of players
+ - max # of players
  - last time down (for uptime)
  - timestamp
 if down:
@@ -16,15 +17,18 @@ Error:
 }
 Up:
 {
-    "lastdown": "2012-04-17T16:21:04.732000", 
+    "lastchange": "2012-04-17T16:21:04.732000", 
+    "max_players": 100, 
     "motd": "Nerd.Nu", 
+    "players": 38, 
     "server": "p.nerd.nu", 
     "status": "up", 
     "timestamp": "2012-04-17T16:21:14.435000"
 }
 Down:
 {
-    "lastup": "2012-04-17T16:28:04.185000", 
+    "lastchange": "2012-04-17T16:28:04.185000", 
+    "server": "p.nerd.nu", 
     "status": "down", 
     "timestamp": "2012-04-17T16:28:17.935000"
 }
