@@ -1,3 +1,7 @@
+# Canary v0.1
+# Nick Aldwin
+# https://github.com/NJAldwin/canary
+
 from flask import Flask, jsonify, render_template, request
 import fjson
 import settings
