@@ -3,7 +3,7 @@ $(function() {
     var server = "";
     var t;
     function getData() {
-        $('a#golink').html("[...]");
+        $('input#golink').val("...");
         $.getJSON($SCRIPT_ROOT + '/s/' + server, {},
                   function(data) {
                       if(data.error) {
@@ -22,17 +22,18 @@ $(function() {
                       }
                       $("#result").html(str);
                       jQuery("abbr.timeago").timeago();
-                      $('a#golink').html("[get info]");
+                      $('input#golink').val("get info");
 
                       t = setTimeout(getData, TIME_BETWEEN);
                   });
-        return false;
     }
 
-    $('a#golink').bind('click', function() {
+    $('form#frm').bind('submit', function(event) {
+        event.preventDefault();
         clearTimeout(t);
         server = $('input[name="server"]').val();
-        return getData();
+        getData();
+        return false;
     });
     jQuery("abbr.timeago").timeago();
 });
