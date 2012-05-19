@@ -32,7 +32,7 @@ $(function() {
     $('a#golink').bind('click', function() {
         clearTimeout(t);
         server = $('input[name="server"]').val();
-        getData();
+        return getData();
     });
     jQuery("abbr.timeago").timeago();
 });
