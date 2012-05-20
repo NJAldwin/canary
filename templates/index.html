@@ -7,7 +7,14 @@
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     <h1>Minecraft status</h1>
     <form id="frm">
-    <p><label for="server">Server: </label><input type="text" name="server" value=""> <input type="submit" id="golink" value="get info" /></p>
+    <p><label for="server">Server: </label><input type="text" name="server" value=""> <input type="submit" id="golink" value="get info" /> <img id="spinner" src="{{ url_for('static', filename='spinner.gif') }}" width="16" height="16" /></p>
     </form>
+    <div id="player-meter">
+      <div id="meter-bar" style="width:0%;">
+        <div id="meter-text">
+          <div id="num-players"></div>
+        </div>
+      </div>
+    </div>
     <p><span id="result"></span></p>
 {% endblock %}
