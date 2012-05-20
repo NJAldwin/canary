@@ -1,0 +1,2 @@
+Flask==0.8
+python-dateutil==2.1

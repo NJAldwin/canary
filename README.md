@@ -7,7 +7,11 @@ Canary is a simple service to monitor a few stats about Minecraft servers.  Spec
 
  How
 -----
-Right now, the simplest way to get it running is to run
+First you'll need to grab the required `flask` and `python-dateutil` libraries:
+
+    pip install -r requirements.txt
+
+Right now, the simplest way to get Canary it running is to run
 
     python canary.py
     
