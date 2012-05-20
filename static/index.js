@@ -26,12 +26,12 @@ $(function() {
         $("#player-meter").toggleClass("meter-down", down);
         $("#meter-bar").animate({"width": pct+"%"}, 500);
         jQuery("abbr.timeago").timeago();
-        $('input#golink').val("get info");
+        $("#spinner").hide();
 
         t = setTimeout(getData, TIME_BETWEEN);
     }
     function getData() {
-        $('input#golink').val("...");
+        $("#spinner").show();
         $.getJSON($SCRIPT_ROOT + '/s/' + server, {}, handleData)
             .error(function(e, s, t) {
                 handleData({error: s + ": " + t});
@@ -46,4 +46,5 @@ $(function() {
         return false;
     });
     jQuery("abbr.timeago").timeago();
+    $("#spinner").hide();
 });
