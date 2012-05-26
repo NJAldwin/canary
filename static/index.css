@@ -13,11 +13,15 @@
 }
 #meter-bar {
     background: #090;
+    color: #fff;
     height: 1.25em;
     overflow: visible !important;
 }
+.meter-warn {
+    color: #000 !important;
+    background: #d90 !important;
+}
 #meter-text {
-    color: #fff;
     height: 1em;
     width: 400px;
     font-size: 0.75em;

@@ -1,17 +1,20 @@
 $(function() {
     var TIME_BETWEEN = 30 * 1000; // ms
+    var WARN_THRESHOLD = 95; // percent full
     var server = "";
     var t;
     function handleData(data) {        
         pct = 0;
         pl = "";
         down = true;
+        nearMax = false;
         if(data.error) {
             str = "there was an error!";
         } else {
             motd = ""
             if(data.status == "up") {
                 pct = 100 * Math.min(data.players / data.max_players, 1);
+                nearMax = (pct >= 95);
                 pl = data.players + "/" + data.max_players + " players";
                 motd = " [" + data.motd + "]"
                 down = false;
@@ -25,6 +28,7 @@ $(function() {
         $("#num-players").text(pl);
         $("#player-meter").toggleClass("meter-down", down);
         $("#meter-bar").animate({"width": pct+"%"}, 500);
+        $("#meter-bar").toggleClass("meter-warn", nearMax);
         jQuery("abbr.timeago").timeago();
         $("#spinner").hide();
 
