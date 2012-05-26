@@ -11,7 +11,7 @@ First you'll need to grab the required `flask` and `python-dateutil` libraries:
 
     pip install -r requirements.txt
 
-Right now, the simplest way to get Canary it running is to run
+Right now, the simplest way to get Canary running is to run
 
     python canary.py
     
