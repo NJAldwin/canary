@@ -46,9 +46,18 @@ $(function() {
         event.preventDefault();
         clearTimeout(t);
         server = $('input[name="server"]').val();
+        $.address.path("u/" + server);
         getData();
         return false;
     });
+    $.address.externalChange(function(event) {
+        if (event.pathNames.length > 1 && event.pathNames[0] == "u") {
+            clearTimeout(t);
+            server = event.pathNames[1];
+            $('input[name="server"]').val(server);
+            getData();
+        }
+    }); 
     jQuery("abbr.timeago").timeago();
     $("#spinner").hide();
 });
