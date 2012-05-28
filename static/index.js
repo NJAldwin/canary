@@ -48,8 +48,10 @@ $(function() {
         clearTimeout(t);
         input = punycode.toASCII($('input[name="server"]').val());
         server = input.replace(strip, "-");
-        $.address.path("u/" + server);
-        getData();
+        if(server.length > 0) {
+            $.address.path("u/" + server);
+            getData();
+        }
         return false;
     });
     $.address.externalChange(function(event) {
