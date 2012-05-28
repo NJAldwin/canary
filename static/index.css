@@ -17,9 +17,9 @@
     height: 1.25em;
     overflow: visible !important;
 }
-.meter-warn {
-    color: #000 !important;
-    background: #d90 !important;
+#meter-bar.meter-warn {
+    color: #000;
+    background: #d90;
 }
 #meter-text {
     height: 1em;
@@ -31,6 +31,6 @@
     top: 1px;
     left: 1px;
 }
-.meter-down {
-    background: #900 !important;
+#player-meter.meter-down {
+    background: #900;
 }

@@ -17,7 +17,7 @@ Right now, the simplest way to get Canary running is to run
     
 and set up cron jobs to update the data for each server every so often by using `curl` (this ensures that the "how long" data is mostly accurate):
 
-    curl http://localhost:5000/s/<server>
+    curl http://localhost:5000/s/<server> > /dev/null 2>&1
 
 Then you can just point your browser at <http://localhost:5000/> and punch in the server to see the latest results (this will also trigger an update if there hasn't been one recently).
 

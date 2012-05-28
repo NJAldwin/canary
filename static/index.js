@@ -21,8 +21,8 @@ $(function() {
             }
             
             str = data.server + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>";
-            str += "<br />since <abbr class='timeago' title='" + data.lastchange + "'>" + data.lastchange + "</abbr>";
-            str += "<br />last checked <abbr class='timeago' title='" + data.timestamp + "'>" + data.timestamp + "</abbr>";
+            str += "<br />since <abbr class='timeago' title='" + data.lastchange + "'>" + moment(data.lastchange).calendar() + "</abbr>";
+            str += "<br />last checked <abbr class='timeago' title='" + data.timestamp + "'>" + moment(data.timestamp).calendar() + "</abbr>";
         }
         $("#result").html(str);
         $("#num-players").text(pl);
@@ -46,9 +46,18 @@ $(function() {
         event.preventDefault();
         clearTimeout(t);
         server = $('input[name="server"]').val();
+        $.address.path("u/" + server);
         getData();
         return false;
     });
+    $.address.externalChange(function(event) {
+        if (event.pathNames.length > 1 && event.pathNames[0] == "u") {
+            clearTimeout(t);
+            server = event.pathNames[1];
+            $('input[name="server"]').val(server);
+            getData();
+        }
+    }); 
     jQuery("abbr.timeago").timeago();
     $("#spinner").hide();
 });
