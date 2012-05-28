@@ -34,3 +34,6 @@
 #player-meter.meter-down {
     background: #900;
 }
+abbr {
+    border-bottom: 1px dotted #000;
+}
