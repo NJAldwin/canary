@@ -65,4 +65,5 @@ $(function() {
     }); 
     jQuery("abbr.timeago").timeago();
     $("#spinner").hide();
+    $('input[name="server"]').focus();
 });
