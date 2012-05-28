@@ -7,7 +7,7 @@ DEBUG = True
 STORE_DIR = "servers"
 
 # The length of time to wait before giving up when connecting to a server
-TIMEOUT = 8 # seconds
+TIMEOUT = 10 # seconds
 
 # Minimum amount of time between checks
-TIME_BETWEEN = 10 # seconds
+TIME_BETWEEN = 60 # seconds
