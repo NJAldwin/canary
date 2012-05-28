@@ -3,6 +3,7 @@ $(function() {
     var WARN_THRESHOLD = 95; // percent full
     var server = "";
     var t;
+    var strip = /[^a-zA-Z0-9\-.:]/g;
     function handleData(data) {        
         pct = 0;
         pl = "";
@@ -20,7 +21,7 @@ $(function() {
                 down = false;
             }
             
-            str = "The server <tt>" + data.server + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
+            str = "The server <tt>" + punycode.toUnicode(data.server) + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
             str += "<br />It has been " + data.status + " since <abbr class='timeago' title='" + data.lastchange + "'>" + moment(data.lastchange).calendar() + "</abbr>.";
             str += "<br />Last checked <abbr class='timeago' title='" + data.timestamp + "'>" + moment(data.timestamp).calendar() + "</abbr>.";
         }
@@ -45,7 +46,8 @@ $(function() {
     $('form#frm').bind('submit', function(event) {
         event.preventDefault();
         clearTimeout(t);
-        server = $('input[name="server"]').val();
+        input = punycode.toASCII($('input[name="server"]').val());
+        server = input.replace(strip, "-");
         $.address.path("u/" + server);
         getData();
         return false;
@@ -53,7 +55,8 @@ $(function() {
     $.address.externalChange(function(event) {
         if (event.pathNames.length > 1 && event.pathNames[0] == "u") {
             clearTimeout(t);
-            server = event.pathNames[1];
+            input = punycode.toASCII(event.pathNames[1]);
+            server = input.replace(strip, "-");
             $('input[name="server"]').val(server);
             getData();
         }
