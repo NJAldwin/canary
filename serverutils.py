@@ -11,6 +11,7 @@ __all__ = ['filename', 'check']
 
 safename = re.compile(r'[^a-zA-Z0-9\-.]')
 safeport = re.compile(r'[^0-9]')
+safemotd = re.compile(r'[^a-zA-Z0-9\-+&@#\/%\?=~_|!:,\.;\(\) ]')
 
 MAX_DOMAIN_LEN = 255
 
@@ -31,7 +32,7 @@ def get_info(host, port):
     
     d = d[3:].decode('utf-16be').split(u'\xa7')
     
-    return {'motd':            d[0],
+    return {'motd':        safemotd.sub(".", d[0]),
             'players':     int(d[1]),
             'max_players': int(d[2])}
 
