@@ -20,9 +20,9 @@ $(function() {
                 down = false;
             }
             
-            str = data.server + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>";
-            str += "<br />since <abbr class='timeago' title='" + data.lastchange + "'>" + moment(data.lastchange).calendar() + "</abbr>";
-            str += "<br />last checked <abbr class='timeago' title='" + data.timestamp + "'>" + moment(data.timestamp).calendar() + "</abbr>";
+            str = "The server <tt>" + data.server + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
+            str += "<br />It has been " + data.status + " since <abbr class='timeago' title='" + data.lastchange + "'>" + moment(data.lastchange).calendar() + "</abbr>.";
+            str += "<br />Last checked <abbr class='timeago' title='" + data.timestamp + "'>" + moment(data.timestamp).calendar() + "</abbr>.";
         }
         $("#result").html(str);
         $("#num-players").text(pl);
