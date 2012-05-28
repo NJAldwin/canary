@@ -5,8 +5,14 @@ import dateutil.parser
 from dateutil.tz import *
 import json
 from datetime import datetime, timedelta
+import re
 
 __all__ = ['filename', 'check']
+
+safename = re.compile(r'[^a-zA-Z0-9\-.]')
+safeport = re.compile(r'[^0-9]')
+
+MAX_DOMAIN_LEN = 255
 
 def get_info(host, port):
     """ Get information about a Minecraft server """
@@ -33,7 +39,11 @@ def filename(server):
     """ Get the filename corresponding to the server (may or may not exist)
     Note that the server name should include the port """
 
+    # note this may still generate an error if running on windows
+    # since windows has a 260-char path limit
     (host,sep,port) = server.partition(":")
+    host = safename.sub('-', host)[:MAX_DOMAIN_LEN]
+    port = safeport.sub('', port)
     return os.path.join(settings.STORE_DIR, "%s(%s)" % (host, port))
 
 def check(server):

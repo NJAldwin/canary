@@ -3,6 +3,7 @@ $(function() {
     var WARN_THRESHOLD = 95; // percent full
     var server = "";
     var t;
+    var strip = /[^a-zA-Z0-9\-.:]/g;
     function handleData(data) {        
         pct = 0;
         pl = "";
@@ -45,7 +46,8 @@ $(function() {
     $('form#frm').bind('submit', function(event) {
         event.preventDefault();
         clearTimeout(t);
-        server = $('input[name="server"]').val();
+        input = $('input[name="server"]').val();
+        server = input.replace(strip, "-");
         $.address.path("u/" + server);
         getData();
         return false;
@@ -53,7 +55,8 @@ $(function() {
     $.address.externalChange(function(event) {
         if (event.pathNames.length > 1 && event.pathNames[0] == "u") {
             clearTimeout(t);
-            server = event.pathNames[1];
+            input = event.pathNames[1];
+            server = input.replace(strip, "-");
             $('input[name="server"]').val(server);
             getData();
         }
