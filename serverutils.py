@@ -58,7 +58,7 @@ def check(server):
 
         # check staleness
         # (using default for timezone info, just in case, as old versions of canary weren't tz aware)
-        last = dateutil.parser.parse(data["timestamp"], default=datetime.now(tzutc()))
+        last = dateutil.parser.parse(data["timestamp"], default=datetime.now(tzlocal()))
         if (last + timedelta(seconds=settings.TIME_BETWEEN)) <= datetime.now(tzutc()):
             needs = True
 
