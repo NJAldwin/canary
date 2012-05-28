@@ -2,6 +2,7 @@ import os
 import socket
 import settings
 import dateutil.parser
+from dateutil.tz import *
 import json
 from datetime import datetime, timedelta
 
@@ -56,8 +57,9 @@ def check(server):
         f.close()
 
         # check staleness
-        last = dateutil.parser.parse(data["timestamp"])
-        if (last + timedelta(seconds=settings.TIME_BETWEEN)) <= datetime.now():
+        # (using default for timezone info, just in case, as old versions of canary weren't tz aware)
+        last = dateutil.parser.parse(data["timestamp"], default=datetime.now(tzlocal()))
+        if (last + timedelta(seconds=settings.TIME_BETWEEN)) <= datetime.now(tzlocal()):
             needs = True
 
     except IOError:
@@ -78,7 +80,7 @@ def check(server):
             # server problem -> empty dict
             pass
 
-        ndata = {"timestamp": datetime.now().isoformat(),
+        ndata = {"timestamp": datetime.now(tzlocal()).isoformat(),
                  "server":    server}
 
         if len(s)>0:
