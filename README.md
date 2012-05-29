@@ -21,6 +21,8 @@ and set up cron jobs to update the data for each server every so often by using 
 
 Then you can just point your browser at <http://localhost:5000/> and punch in the server to see the latest results (this will also trigger an update if there hasn't been one recently).
 
+I recommend the use of something like [gunicorn](http://gunicorn.org/) for running the application in a production environment.
+
 See the `settings.py` file for more tweaks.
 
  Why
