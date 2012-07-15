@@ -4,6 +4,8 @@ $(function() {
     var server = "";
     var t;
     var strip = /[^a-zA-Z0-9\-.:]/g;
+    var seconds_between = Math.round(TIME_BETWEEN) / 1000;
+    var seconds_between_plural = seconds_between === 1 ? "" : "s";
     function handleData(data) {        
         pct = 0;
         pl = "";
@@ -24,6 +26,7 @@ $(function() {
             str = "The server <tt>" + punycode.toUnicode(data.server) + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
             str += "<br />It has been " + data.status + " since <abbr class='timeago' title='" + data.lastchange + "'>" + moment(data.lastchange).calendar() + "</abbr>.";
             str += "<br />Last checked <abbr class='timeago' title='" + data.timestamp + "'>" + moment(data.timestamp).calendar() + "</abbr>.";
+            str += "<br />Status refreshes every " + seconds_between + " second" + seconds_between_plural + ".";
         }
         $("#result").html(str);
         $("#num-players").text(pl);
