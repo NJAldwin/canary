@@ -13,7 +13,7 @@ $(function() {
         nearMax = false;
         docTitle = "MineCanary - " + server + " - ";
         if(data.error) {
-            str = "there was an error!";
+            str = "There was an error!";
             docTitle += "error";
         } else {
             motd = ""
