@@ -31,8 +31,8 @@ $(function() {
             str = "The server <tt>" + punycode.toUnicode(data.server) + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
             str += "<br />It has been " + data.status + " since <abbr class='timeago' title='" + data.lastchange + "'>" + moment(data.lastchange).calendar() + "</abbr>.";
             str += "<br />Last checked <abbr class='timeago' title='" + data.timestamp + "'>" + moment(data.timestamp).calendar() + "</abbr>.";
-            str += "<br />Status refreshes every " + seconds_between + " second" + seconds_between_plural + ".";
         }
+        str += "<br />Status refreshes every " + seconds_between + " second" + seconds_between_plural + ".";
         $("#result").html(str);
         $("#num-players").text(pl);
         $("#player-meter").toggleClass("meter-down", down);
