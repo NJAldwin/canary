@@ -44,7 +44,7 @@ def clean_server(server):
         server = server + ":25565"
 
     (host,sep,port) = server.partition(":")
-    host = safename.sub('-', host)[:MAX_DOMAIN_LEN]
+    host = safename.sub('-', host)[:MAX_DOMAIN_LEN].lower()
     port = safeport.sub('', port)
 
     return (host, port)
