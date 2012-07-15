@@ -11,8 +11,10 @@ $(function() {
         pl = "";
         down = true;
         nearMax = false;
+        docTitle = "MineCanary - " + server + " - ";
         if(data.error) {
             str = "there was an error!";
+            docTitle += "error";
         } else {
             motd = ""
             if(data.status == "up") {
@@ -21,6 +23,9 @@ $(function() {
                 pl = data.players + "/" + data.max_players + " players";
                 motd = " [" + data.motd + "]"
                 down = false;
+                docTitle += pl;
+            } else {
+                docTitle += "down";
             }
             
             str = "The server <tt>" + punycode.toUnicode(data.server) + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
@@ -33,6 +38,7 @@ $(function() {
         $("#player-meter").toggleClass("meter-down", down);
         $("#meter-bar").animate({"width": pct+"%"}, 500);
         $("#meter-bar").toggleClass("meter-warn", nearMax);
+        document.title = docTitle;
         jQuery("abbr.timeago").timeago();
         $("#spinner").hide();
 
