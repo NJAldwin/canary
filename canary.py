@@ -1,4 +1,4 @@
-# Canary v0.10
+# Canary v0.10.1
 # Nick Aldwin
 # https://github.com/NJAldwin/canary
 
