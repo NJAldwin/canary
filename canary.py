@@ -1,10 +1,9 @@
-# Canary v0.10
+# Canary v0.10.1
 # Nick Aldwin
 # https://github.com/NJAldwin/canary
 
 from flask import Flask, jsonify, render_template, request
 import fjson
-import serverutils
 from urlparse import urlparse
 import glob
 import os
@@ -13,10 +12,15 @@ def make_app(import_name, **kwargs):
     return fjson.make_json_app(import_name, **kwargs)
 
 app = make_app(__name__)
-app.config.from_object('settings')
+import settings
+app.config.from_object(settings)
 app.config.from_envvar('CANARY_SETTINGS', silent=True)
 
 config = app.config
+
+__all__ = ['app', 'config']
+
+import serverutils
 
 @app.before_first_request
 def initialize():
