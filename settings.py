@@ -1,7 +1,11 @@
 # Canary Settings
 
+# To customize, either edit this file (will mess with updating, though) or
+# put new settings in another file and set the environment variable
+# CANARY_SETTINGS to its path.
+
 # Whether or not to be in debug mode
-DEBUG = True
+DEBUG = False
 
 # The directory in which to store server status
 STORE_DIR = "servers"

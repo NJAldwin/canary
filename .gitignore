@@ -38,4 +38,5 @@ tramp
 .\#*
 
 # Canary
+localsettings.py
 /servers

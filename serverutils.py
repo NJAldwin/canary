@@ -1,11 +1,11 @@
 import os
 import socket
-import settings
 import dateutil.parser
 from dateutil.tz import *
 import json
 from datetime import datetime, timedelta
 import re
+from canary import config
 
 __all__ = ['filename', 'check']
 
@@ -22,7 +22,7 @@ def get_info(host, port):
     # http://www.wiki.vg/Protocol#Server_List_Ping_.280xFE.29
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(settings.TIMEOUT)
+    s.settimeout(config['TIMEOUT'])
     s.connect((host, port))
     
     s.send('\xfe')
@@ -54,7 +54,7 @@ def filename(host, port):
 
     # note this may still generate an error if running on windows
     # since windows has a 260-char path limit
-    return os.path.join(settings.STORE_DIR, "%s(%s)" % (host, port))
+    return os.path.join(config['STORE_DIR'], "%s(%s)" % (host, port))
 
 def check(server):
     """ Get the status of the server in a dict --
@@ -79,7 +79,7 @@ def check(server):
         # check staleness
         # (using default for timezone info, just in case, as old versions of canary weren't tz aware)
         last = dateutil.parser.parse(data["timestamp"], default=nowlocal)
-        if (last + timedelta(seconds=settings.TIME_BETWEEN)) <= nowutc:
+        if (last + timedelta(seconds=config['TIME_BETWEEN'])) <= nowutc:
             needs = True
 
     except IOError:
