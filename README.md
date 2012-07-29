@@ -23,7 +23,7 @@ Then you can just point your browser at <http://localhost:5000/> and punch in th
 
 I recommend the use of something like [gunicorn](http://gunicorn.org/) for running the application in a production environment.
 
-See the `settings.py` file for more tweaks.
+See the `settings.py` file for more tweaks.  To use custom settings, create a new file, put the new settings in it, and set the environment variable `CANARY_SETTINGS` to the path of the new file before running Canary.
 
  Why
 -----

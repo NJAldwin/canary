@@ -1,25 +1,30 @@
-# Canary v0.9
+# Canary v0.10
 # Nick Aldwin
 # https://github.com/NJAldwin/canary
 
 from flask import Flask, jsonify, render_template, request
 import fjson
-import settings
 import serverutils
 from urlparse import urlparse
 import glob
 import os
 
 def make_app(import_name, **kwargs):
-    if not os.path.exists(settings.STORE_DIR):
-        os.mkdir(settings.STORE_DIR)
-    # clear out old lockfiles
-    for f in glob.iglob(os.path.join(settings.STORE_DIR, "*.lock")):
-        os.remove(f)    
-
     return fjson.make_json_app(import_name, **kwargs)
 
 app = make_app(__name__)
+app.config.from_object('settings')
+app.config.from_envvar('CANARY_SETTINGS', silent=True)
+
+config = app.config
+
+@app.before_first_request
+def initialize():
+    if not os.path.exists(config['STORE_DIR']):
+        os.mkdir(config['STORE_DIR'])
+    # clear out old lockfiles
+    for f in glob.iglob(os.path.join(config['STORE_DIR'], "*.lock")):
+        os.remove(f)
 
 @app.route('/')
 def index():
@@ -35,4 +40,4 @@ def server(server):
         return jsonify(error="Problems getting status")
 
 if __name__ == "__main__":
-    app.run(debug=settings.DEBUG, host='0.0.0.0')
+    app.run(host='0.0.0.0')

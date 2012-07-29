@@ -16,6 +16,8 @@ $(function() {
             str = "There was an error!";
             docTitle += "error";
         } else {
+            timeOffset = moment(data.reference_timestamp) - moment();
+
             motd = ""
             if(data.status == "up") {
                 pct = 100 * Math.min(data.players / data.max_players, 1);
@@ -27,10 +29,13 @@ $(function() {
             } else {
                 docTitle += "down";
             }
+
+            lastChangeTime = moment(data.lastchange).add(timeOffset);
+            lastCheckTime = moment(data.timestamp).add(timeOffset);
             
             str = "The server <tt>" + punycode.toUnicode(data.server) + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
-            str += "<br />It has been " + data.status + " since <abbr class='timeago' title='" + data.lastchange + "'>" + moment(data.lastchange).calendar() + "</abbr>.";
-            str += "<br />Last checked <abbr class='timeago' title='" + data.timestamp + "'>" + moment(data.timestamp).calendar() + "</abbr>.";
+            str += "<br />It has been " + data.status + " since <abbr class='timeago' title='" + lastChangeTime.format() + "'>" + lastChangeTime.calendar() + "</abbr>.";
+            str += "<br />Last checked <abbr class='timeago' title='" + lastCheckTime.format() + "'>" + lastCheckTime.calendar() + "</abbr>.";
         }
         str += "<br />Status refreshes every " + seconds_between + " second" + seconds_between_plural + ".";
         $("#result").html(str);
