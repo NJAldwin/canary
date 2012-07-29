@@ -67,6 +67,9 @@ def check(server):
     server = host + ":" + port
     fname = filename(host, port)
 
+    nowutc = datetime.now(tzutc())
+    nowlocal = datetime.now(tzlocal())
+
     try:
         # load the old data if there is any
         f = open(fname, "r")
@@ -75,8 +78,8 @@ def check(server):
 
         # check staleness
         # (using default for timezone info, just in case, as old versions of canary weren't tz aware)
-        last = dateutil.parser.parse(data["timestamp"], default=datetime.now(tzlocal()))
-        if (last + timedelta(seconds=settings.TIME_BETWEEN)) <= datetime.now(tzutc()):
+        last = dateutil.parser.parse(data["timestamp"], default=nowlocal)
+        if (last + timedelta(seconds=settings.TIME_BETWEEN)) <= nowutc:
             needs = True
 
     except IOError:
@@ -101,7 +104,7 @@ def check(server):
                 # server problem -> empty dict
                 pass
 
-            ndata = {"timestamp": datetime.now(tzutc()).isoformat(),
+            ndata = {"timestamp": nowutc.isoformat(),
                      "server":    server}
 
             if len(s)>0:
@@ -120,6 +123,7 @@ def check(server):
 
             # dump new data
             data = ndata
+            data["reference_timestamp"] = nowutc.isoformat()
             f = open(fname, "w")
             json.dump(data, f)
             f.close()
