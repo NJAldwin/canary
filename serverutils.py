@@ -31,10 +31,21 @@ def get_info(host, port):
     assert d[0] == '\xff'
     
     d = d[3:].decode('utf-16be').split(u'\xa7')
-    
-    return {'motd':        safemotd.sub(".", d[0]),
-            'players':     int(d[1]),
-            'max_players': int(d[2])}
+
+    res =  {'motd':        '',
+            'players':     -1,
+            'max_players': -1}
+
+    dlen = len(d)
+
+    if dlen>0:
+        res['motd'] = safemotd.sub(".", d[0])
+    if dlen>1:
+        res['players'] = int(d[1])
+    if dlen>2:
+        res['max_players'] = int(d[2])
+
+    return res
 
 def clean_server(server):
     """ Get the sanitized host and port """

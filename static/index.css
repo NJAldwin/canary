@@ -21,6 +21,10 @@
     color: #000;
     background: #d90;
 }
+#meter-bar.meter-unknown {
+    color: #000;
+    background: #cfc;
+}
 #meter-text {
     height: 1em;
     width: 400px;

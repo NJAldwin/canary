@@ -11,6 +11,8 @@ if down:
 if error:
  - error
 
+NOTE: if either players or max_players is not reported by the server, canary will report the value as -1.
+
 Error:
 {
     "error": "error message"
