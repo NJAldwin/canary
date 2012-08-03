@@ -11,6 +11,7 @@ $(function() {
         pl = "";
         down = true;
         nearMax = false;
+        unknownData = false;
         docTitle = "MineCanary - " + server + " - ";
         if(data.error) {
             str = "There was an error!";
@@ -20,9 +21,16 @@ $(function() {
 
             motd = ""
             if(data.status == "up") {
-                pct = 100 * Math.min(data.players / data.max_players, 1);
-                nearMax = (pct >= 95);
-                pl = data.players + "/" + data.max_players + " players";
+                if(data.max_players <= 0) {
+                    unknownData = true;
+                    pct = 100;
+                    pl = "???";
+                } else {
+                    pct = 100 * Math.min(data.players / data.max_players, 1);
+                    nearMax = (pct >= 95);
+                    pl = data.players + "/" + data.max_players;
+                }
+                pl = pl + " players";
                 motd = " [" + data.motd + "]"
                 down = false;
                 docTitle += pl;
@@ -43,6 +51,7 @@ $(function() {
         $("#player-meter").toggleClass("meter-down", down);
         $("#meter-bar").animate({"width": pct+"%"}, 500);
         $("#meter-bar").toggleClass("meter-warn", nearMax);
+        $("#meter-bar").toggleClass("meter-unknown", unknownData);
         document.title = docTitle;
         jQuery("abbr.timeago").timeago();
         $("#spinner").hide();
