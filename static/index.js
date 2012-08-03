@@ -27,7 +27,7 @@ $(function() {
                     pl = "???";
                 } else {
                     pct = 100 * Math.min(data.players / data.max_players, 1);
-                    nearMax = (pct >= 95);
+                    nearMax = (pct >= WARN_THRESHOLD);
                     pl = data.players + "/" + data.max_players;
                 }
                 pl = pl + " players";
