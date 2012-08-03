@@ -7,6 +7,10 @@
 # Whether or not to be in debug mode
 DEBUG = False
 
+# The environment (e.g. QA or Development)
+# Don't set this in production
+# ENV = "dev"
+
 # The directory in which to store server status
 STORE_DIR = "servers"
 
