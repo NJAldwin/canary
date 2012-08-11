@@ -5,13 +5,15 @@ from dateutil.tz import *
 import json
 from datetime import datetime, timedelta
 import re
+from xml.sax.saxutils import escape
 from canary import config
 
 __all__ = ['filename', 'check']
 
 safename = re.compile(r'[^a-zA-Z0-9\-.]')
 safeport = re.compile(r'[^0-9]')
-safemotd = re.compile(r'[^a-zA-Z0-9\-+&@#\/%\?=~_|!:,\.;\(\) ]')
+safemotd = {'"':  '&quot;',
+            '\'': '&apos;'}
 
 MAX_DOMAIN_LEN = 255
 
@@ -39,7 +41,7 @@ def get_info(host, port):
     dlen = len(d)
 
     if dlen>0:
-        res['motd'] = safemotd.sub(".", d[0])
+        res['motd'] = escape(d[0], safemotd)
     if dlen>1:
         res['players'] = int(d[1])
     if dlen>2:
