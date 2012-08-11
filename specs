@@ -1,6 +1,6 @@
 want to keep track of:
 if up:
- - motd
+ - motd (HTML-escaped)
  - number of players
  - max # of players
  - last time down (for uptime)
