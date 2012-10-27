@@ -16,36 +16,67 @@ safemotd = {'"':  '&quot;',
             '\'': '&apos;'}
 
 MAX_DOMAIN_LEN = 255
-
 def get_info(host, port):
     """ Get information about a Minecraft server """
     # inspired from
     # https://gist.github.com/1209061
     # http://www.wiki.vg/Protocol#Server_List_Ping_.280xFE.29
+    # http://www.wiki.vg/Server_List_Ping
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(config['TIMEOUT'])
     s.connect((host, port))
-    
-    s.send('\xfe')
+
+    s.send('\xfe\x01')
     d = s.recv(256)
     s.close()
     assert d[0] == '\xff'
-    
-    d = d[3:].decode('utf-16be').split(u'\xa7')
 
-    res =  {'motd':        '',
-            'players':     -1,
-            'max_players': -1}
+    d = d[3:].decode('utf-16be')
 
-    dlen = len(d)
+    res = {'motd':             '',
+           'players':          -1,
+           'max_players':      -1,
+           'protocol_version': -1,
+           'server_version':   ''}
 
-    if dlen>0:
-        res['motd'] = escape(d[0], safemotd)
-    if dlen>1:
-        res['players'] = int(d[1])
-    if dlen>2:
-        res['max_players'] = int(d[2])
+    if d[:3] == u'\xa7\x31\x00':
+        # new protocol (>= 1.4)
+
+        d = d[3:].split(u'\x00')
+
+        dlen = len(d)
+
+        if dlen > 0:
+            res['protocol_version'] = int(d[0])
+        if dlen > 1:
+            res['server_version'] = d[1]
+        if dlen > 2:
+            res['motd'] = escape(d[2], safemotd)
+        if dlen > 3:
+            res['players'] = int(d[3])
+        if dlen > 4:
+            res['max_players'] = int(d[4])
+
+    else:
+        # old protocol (< 1.4)
+        # note some servers (modded bukkit?) seem to warn
+        # about the extra \x01 but normal servers do not.
+
+        d = d.split(u'\xa7')
+
+        res =  {'motd':        '',
+                'players':     -1,
+                'max_players': -1}
+
+        dlen = len(d)
+
+        if dlen>0:
+            res['motd'] = escape(d[0], safemotd)
+        if dlen>1:
+            res['players'] = int(d[1])
+        if dlen>2:
+            res['max_players'] = int(d[2])
 
     return res
 
