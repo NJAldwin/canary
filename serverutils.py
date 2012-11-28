@@ -126,8 +126,8 @@ def check(server):
         if (last + timedelta(seconds=config['TIME_BETWEEN'])) <= nowutc:
             needs = True
 
-    except IOError:
-        # file does not exist
+    except (IOError, ValueError):
+        # file does not exist or is malformed
         needs = True
 
     with filelock(fname + ".lock") as fl:
