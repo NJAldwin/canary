@@ -58,6 +58,7 @@ def index():
     return render_template('index.html')
 
 @app.route("/s/<server>")
+@cors
 def server(server):
     try:
         u = urlparse(server)
