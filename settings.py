@@ -19,3 +19,6 @@ TIMEOUT = 10 # seconds
 
 # Minimum amount of time between checks
 TIME_BETWEEN = 60 # seconds
+
+# Allowed CORS Origins
+CORS_ALLOWED = []
