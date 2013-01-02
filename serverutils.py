@@ -65,10 +65,6 @@ def get_info(host, port):
 
         d = d.split(u'\xa7')
 
-        res =  {'motd':        '',
-                'players':     -1,
-                'max_players': -1}
-
         dlen = len(d)
 
         if dlen>0:
@@ -152,18 +148,20 @@ def check(server):
                      "server":    server}
 
             if len(s)>0:
-                ndata["status"]      = "up"
-                ndata["motd"]        = s["motd"]
-                ndata["players"]     = s["players"]
+                ndata["status"] = "up"
+                ndata["motd"] = s["motd"]
+                ndata["players"] = s["players"]
                 ndata["max_players"] = s["max_players"]
+                ndata["server_version"] = s["server_version"]
+                ndata["protocol_version"] = s["protocol_version"]
             else:
-                ndata["status"]      = "down"
+                ndata["status"] = "down"
 
             # set time of last change
-            ndata["lastchange"]      = ndata["timestamp"]
+            ndata["lastchange"] = ndata["timestamp"]
             if "status" in data and data["status"] == ndata["status"] and "lastchange" in data:
                 # status hasn't changed
-                ndata["lastchange"]  = data["lastchange"]
+                ndata["lastchange"] = data["lastchange"]
 
             # dump new data
             data = ndata

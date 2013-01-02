@@ -31,7 +31,7 @@ $(function() {
                     pl = data.players + "/" + data.max_players;
                 }
                 pl = pl + " players";
-                motd = " [" + data.motd + "]"
+                motd = " [" + data.server_version + "] (" + data.motd + ")"
                 down = false;
                 docTitle += pl;
             } else {
