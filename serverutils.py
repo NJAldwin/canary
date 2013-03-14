@@ -182,6 +182,11 @@ def check(server):
 
             fl.release()
 
+        # Ensure correct server name
+        # (Servers sharing an IP may have a different domain name in the saved data)
+        if not "error" in data:
+            data["server"] = server
+
         # if the file is already locked
         # this will return the old data
         # or if it's a new server, the default data
