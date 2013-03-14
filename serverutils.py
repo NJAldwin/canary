@@ -5,6 +5,7 @@ from dateutil.tz import *
 import json
 from datetime import datetime, timedelta
 import re
+import socket
 from xml.sax.saxutils import escape
 from canary import config
 
@@ -103,8 +104,17 @@ def check(server):
     needs = False # becomes True if data needs to be refreshed
     data = {'error':'no data'} # default data
 
-    (host, port) = clean_server(server)
-    server = host + ":" + port
+    (hostname, port) = clean_server(server)
+    server = hostname + ":" + port
+    try:
+        # try to use the IP for filename / pinging
+        # to avoid breaking throttling if people
+        # are using different domain names for
+        # the same IP
+        host = socket.gethostbyname(hostname)
+    except Exception:
+        host = hostname
+
     fname = filename(host, port)
 
     nowutc = datetime.now(tzutc())
