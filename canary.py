@@ -9,6 +9,7 @@ import glob
 import os
 from functools import wraps
 
+
 def make_app(import_name, **kwargs):
     return fjson.make_json_app(import_name, **kwargs)
 
@@ -24,6 +25,7 @@ __all__ = ['app', 'config']
 import serverutils
 import apikeys
 
+
 def cors(f):
     """Check CORS and respond to CORS OPTIONS requests."""
     @wraps(f)
@@ -36,6 +38,7 @@ def cors(f):
             return response
         return f(*args, **kwargs)
     return wrapper
+
 
 def apikey(f):
     """Allow a request if it has a valid API key; else, return an error response."""
@@ -50,6 +53,7 @@ def apikey(f):
         return response
     return wrapper
 
+
 def cors_or_apikey(f):
     """Authenticate a request with API keys or CORS as necessary."""
     @cors
@@ -59,11 +63,13 @@ def cors_or_apikey(f):
         return f(*args, **kwargs)
     return wrapper
 
+
 @app.before_request
 def before_cors():
     """Initialize requests to not be authenticated yet."""
     g.corsallowed = False
     g.validapikey = False
+
 
 @app.after_request
 def after_cors(response):
@@ -72,6 +78,7 @@ def after_cors(response):
         if 'Origin' in request.headers:
             response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
     return response
+
 
 @app.before_first_request
 def initialize():
@@ -85,9 +92,11 @@ def initialize():
         os.mkdir(config['DB_DIR'])
     apikeys.dbsetup()
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route("/s/<server>")
 @cors_or_apikey

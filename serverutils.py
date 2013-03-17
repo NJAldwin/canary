@@ -13,10 +13,12 @@ __all__ = ['filename', 'check']
 
 safename = re.compile(r'[^a-zA-Z0-9\-.]')
 safeport = re.compile(r'[^0-9]')
-safemotd = {'"':  '&quot;',
+safemotd = {'"': '&quot;',
             '\'': '&apos;'}
 
 MAX_DOMAIN_LEN = 255
+
+
 def get_info(host, port):
     """ Get information about a Minecraft server """
     # inspired from
@@ -35,11 +37,11 @@ def get_info(host, port):
 
     d = d[3:].decode('utf-16be')
 
-    res = {'motd':             '',
-           'players':          -1,
-           'max_players':      -1,
+    res = {'motd': '',
+           'players': -1,
+           'max_players': -1,
            'protocol_version': -1,
-           'server_version':   ''}
+           'server_version': ''}
 
     if d[:3] == u'\xa7\x31\x00':
         # new protocol (>= 1.4)
@@ -68,27 +70,29 @@ def get_info(host, port):
 
         dlen = len(d)
 
-        if dlen>0:
+        if dlen > 0:
             res['motd'] = escape(d[0], safemotd)
-        if dlen>1:
+        if dlen > 1:
             res['players'] = int(d[1])
-        if dlen>2:
+        if dlen > 2:
             res['max_players'] = int(d[2])
 
     return res
+
 
 def clean_server(server):
     """ Get the sanitized host and port """
 
     # add default port if necessary
-    if server.find(":")<0:
+    if server.find(":") < 0:
         server = server + ":25565"
 
-    (host,sep,port) = server.partition(":")
+    (host, sep, port) = server.partition(":")
     host = safename.sub('-', host)[:MAX_DOMAIN_LEN].lower()
     port = safeport.sub('', port)
 
     return (host, port)
+
 
 def filename(host, port):
     """ Get the filename corresponding to the server (may or may not exist) """
@@ -97,12 +101,13 @@ def filename(host, port):
     # since windows has a 260-char path limit
     return os.path.join(config['STORE_DIR'], "%s(%s)" % (host, port))
 
+
 def check(server):
     """ Get the status of the server in a dict --
     runs a check if data is nonexistent or stale."""
 
-    needs = False # becomes True if data needs to be refreshed
-    data = {'error':'no data'} # default data
+    needs = False  # becomes True if data needs to be refreshed
+    data = {'error': 'no data'}  # default data
 
     (hostname, port) = clean_server(server)
     server = hostname + ":" + port
@@ -155,9 +160,9 @@ def check(server):
                 pass
 
             ndata = {"timestamp": nowutc.isoformat(),
-                     "server":    server}
+                     "server": server}
 
-            if len(s)>0:
+            if len(s) > 0:
                 ndata["status"] = "up"
                 ndata["motd"] = s["motd"]
                 ndata["players"] = s["players"]
@@ -192,18 +197,20 @@ def check(server):
         # or if it's a new server, the default data
         return data
 
+
 class filelock:
     """ A primitive exclusive lock on a file. """
 
     def __init__(self, filename):
-        self.filename = filename;
+        self.filename = filename
         self.fd = None
-    
+
     def acquire(self):
         """ Non-blocking.  Returns True if lock successfully obtained, else False. """
         try:
             # may not work if using NFS<v3 on kernel<2.6
-            self.fd = os.open(self.filename, os.O_CREAT|os.O_EXCL|os.O_RDWR)
+            self.fd = os.open(
+                self.filename, os.O_CREAT | os.O_EXCL | os.O_RDWR)
             return True
         except OSError as e:
             self.fd = None
