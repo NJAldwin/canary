@@ -40,3 +40,4 @@ tramp
 # Canary
 localsettings.py
 /servers
+/databases

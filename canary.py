@@ -22,8 +22,10 @@ config = app.config
 __all__ = ['app', 'config']
 
 import serverutils
+import apikeys
 
 def cors(f):
+    """Check CORS and respond to CORS OPTIONS requests."""
     @wraps(f)
     def wrapper(*args, **kwargs):
         origin = request.headers.get('Origin')
@@ -35,14 +37,40 @@ def cors(f):
         return f(*args, **kwargs)
     return wrapper
 
+def apikey(f):
+    """Allow a request if it has a valid API key; else, return an error response."""
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        key = request.args.get('apikey')
+        if request.remote_addr in config['ADDRESSES_IGNORE_API_KEY'] or apikeys.validate(key, request.remote_addr):
+            g.validapikey = True
+            return f(*args, **kwargs)
+        response = jsonify(error="Invalid API key")
+        response.status_code = 401
+        return response
+    return wrapper
+
+def cors_or_apikey(f):
+    """Authenticate a request with API keys or CORS as necessary."""
+    @cors
+    @apikey
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        return f(*args, **kwargs)
+    return wrapper
+
 @app.before_request
 def before_cors():
+    """Initialize requests to not be authenticated yet."""
     g.corsallowed = False
+    g.validapikey = False
 
 @app.after_request
 def after_cors(response):
-    if g.corsallowed:
-        response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+    """Add a CORS allow header as appropriate."""
+    if g.corsallowed or (config['ALLOW_CORS_WITH_VALID_API_KEY'] and g.validapikey):
+        if 'Origin' in request.headers:
+            response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
     return response
 
 @app.before_first_request
@@ -52,13 +80,17 @@ def initialize():
     # clear out old lockfiles
     for f in glob.iglob(os.path.join(config['STORE_DIR'], "*.lock")):
         os.remove(f)
+    # make db if necessary
+    if not os.path.exists(config['DB_DIR']):
+        os.mkdir(config['DB_DIR'])
+    apikeys.dbsetup()
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route("/s/<server>")
-@cors
+@cors_or_apikey
 def server(server):
     try:
         u = urlparse(server)

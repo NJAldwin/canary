@@ -20,5 +20,17 @@ TIMEOUT = 10 # seconds
 # Minimum amount of time between checks
 TIME_BETWEEN = 60 # seconds
 
-# Allowed CORS Origins
+# API Key SQLite storage information
+DB_DIR = "databases"
+APIKEY_DB = "keys.db"
+
+# IP Addresses to allow requests from even if no API key is provided
+# Note requests  from these IPs will be treated as if they have a valid API key
+# thus they will be allowed in CORS if ALLOW_CORS_WITH_VALID_API_KEY is set
+ADDRESSES_IGNORE_API_KEY = []
+
+# Send a CORS allow header if a request is made with a valid API key
+ALLOW_CORS_WITH_VALID_API_KEY = True
+
+# CORS Origins which always send the allowed header
 CORS_ALLOWED = []
