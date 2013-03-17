@@ -9,6 +9,7 @@ import glob
 import os
 from functools import wraps
 
+
 def make_app(import_name, **kwargs):
     return fjson.make_json_app(import_name, **kwargs)
 
@@ -23,6 +24,7 @@ __all__ = ['app', 'config']
 
 import serverutils
 
+
 def cors(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -35,9 +37,11 @@ def cors(f):
         return f(*args, **kwargs)
     return wrapper
 
+
 @app.before_request
 def before_cors():
     g.corsallowed = False
+
 
 @app.after_request
 def after_cors(response):
@@ -45,6 +49,7 @@ def after_cors(response):
         if 'Origin' in request.headers:
             response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
     return response
+
 
 @app.before_first_request
 def initialize():
@@ -54,9 +59,11 @@ def initialize():
     for f in glob.iglob(os.path.join(config['STORE_DIR'], "*.lock")):
         os.remove(f)
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route("/s/<server>")
 @cors

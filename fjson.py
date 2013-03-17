@@ -5,6 +5,8 @@ from werkzeug.exceptions import HTTPException
 __all__ = ['make_json_app']
 
 # based on http://flask.pocoo.org/snippets/83/
+
+
 def make_json_app(import_name, **kwargs):
     """
     Creates a JSON-oriented Flask app.
