@@ -27,7 +27,7 @@ def cors(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         origin = request.headers.get('Origin')
-        g.corsallowed = origin in config['CORS_ALLOWED']
+        g.corsallowed = config['ALLOW_ALL_ORIGINS'] or origin in config['CORS_ALLOWED']
         if request.method == 'OPTIONS':
             response = make_response('')
             response.headers['Access-Control-Allow-Origin'] = origin
@@ -42,7 +42,8 @@ def before_cors():
 @app.after_request
 def after_cors(response):
     if g.corsallowed:
-        response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+        if 'Origin' in request.headers:
+            response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
     return response
 
 @app.before_first_request
