@@ -4,8 +4,6 @@ $(function() {
     var server = "";
     var t;
     var strip = /[^a-zA-Z0-9\-.:]/g;
-    var seconds_between = Math.round(TIME_BETWEEN) / 1000;
-    var seconds_between_plural = seconds_between === 1 ? "" : "s";
     function handleData(data) {        
         pct = 0;
         pl = "";
@@ -40,13 +38,18 @@ $(function() {
 
             lastChangeTime = moment(data.lastchange).add(timeOffset);
             lastCheckTime = moment(data.timestamp).add(timeOffset);
+
+            // available but not used at the moment
+            // serverTimeBetween = data.min_refresh_interval * 1000; // ms
+            // nextServerRefresh = moment(data.timestamp).add(serverTimeBetween).add(timeOffset);
             
             str = "The server <tt>" + punycode.toUnicode(data.server) + "</tt>" + motd + " is <span class='status-" + data.status + "'>" + data.status + "</span>.";
-            str += "<br />It has been " + data.status + " since <abbr class='timeago' title='" + lastChangeTime.format() + "'>" + lastChangeTime.calendar() + "</abbr>.";
+            str += "<br />It has been " + data.status + " since: " + lastChangeTime.calendar() +  " (<abbr class='timeago' title='" + lastChangeTime.format() + "'>" + lastChangeTime.calendar() + "</abbr>).";
             str += "<br />Last checked <abbr class='timeago' title='" + lastCheckTime.format() + "'>" + lastCheckTime.calendar() + "</abbr>.";
         }
-        str += "<br />Status refreshes every " + seconds_between + " second" + seconds_between_plural + ".";
         $("#result").html(str);
+        nextClientRefresh = moment().add(TIME_BETWEEN);
+        $("#nextrefresh").html("Auto refresh: <abbr class='timeago' title='" + nextClientRefresh.format() + "'>" + nextClientRefresh.calendar() + "</abbr>.");
         $("#num-players").text(pl);
         $("#player-meter").toggleClass("meter-down", down);
         $("#meter-bar").animate({"width": pct+"%"}, 500);
@@ -55,10 +58,12 @@ $(function() {
         document.title = docTitle;
         jQuery("abbr.timeago").timeago();
         $("#spinner").hide();
+        $("#nextrefresh").show();
 
         t = setTimeout(getData, TIME_BETWEEN);
     }
     function getData() {
+        $("#nextrefresh").hide();
         $("#spinner").show();
         $.getJSON($SCRIPT_ROOT + '/s/' + server, {}, handleData)
             .error(function(e, s, t) {
