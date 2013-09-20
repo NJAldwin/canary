@@ -1,4 +1,4 @@
-# Canary v0.14.1
+# Canary v0.15.0
 # Nick Aldwin
 # https://github.com/NJAldwin/canary
 
@@ -8,6 +8,7 @@ from urlparse import urlparse
 import glob
 import os
 from functools import wraps
+
 
 def make_app(import_name, **kwargs):
     return fjson.make_json_app(import_name, **kwargs)
@@ -23,11 +24,12 @@ __all__ = ['app', 'config']
 
 import serverutils
 
+
 def cors(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         origin = request.headers.get('Origin')
-        g.corsallowed = origin in config['CORS_ALLOWED']
+        g.corsallowed = config['ALLOW_ALL_ORIGINS'] or origin in config['CORS_ALLOWED']
         if request.method == 'OPTIONS':
             response = make_response('')
             response.headers['Access-Control-Allow-Origin'] = origin
@@ -35,15 +37,19 @@ def cors(f):
         return f(*args, **kwargs)
     return wrapper
 
+
 @app.before_request
 def before_cors():
     g.corsallowed = False
 
+
 @app.after_request
 def after_cors(response):
     if g.corsallowed:
-        response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
+        if 'Origin' in request.headers:
+            response.headers['Access-Control-Allow-Origin'] = request.headers['Origin']
     return response
+
 
 @app.before_first_request
 def initialize():
@@ -53,9 +59,11 @@ def initialize():
     for f in glob.iglob(os.path.join(config['STORE_DIR'], "*.lock")):
         os.remove(f)
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route("/s/<server>")
 @cors

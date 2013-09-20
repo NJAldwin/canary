@@ -15,10 +15,13 @@ DEBUG = False
 STORE_DIR = "servers"
 
 # The length of time to wait before giving up when connecting to a server
-TIMEOUT = 10 # seconds
+TIMEOUT = 10  # seconds
 
 # Minimum amount of time between checks
-TIME_BETWEEN = 60 # seconds
+TIME_BETWEEN = 60  # seconds
+
+# Allow requests from any origin, essentially bypassing CORS
+ALLOW_ALL_ORIGINS = False
 
 # Allowed CORS Origins
 CORS_ALLOWED = []

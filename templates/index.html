@@ -3,7 +3,7 @@
 {% block head %}
 <script src="{{ url_for('static', filename='jquery.timeago.js') }}"></script>
 <script src="{{ url_for('static', filename='jquery.address-1.4.min.js') }}"></script>
-<script src="{{ url_for('static', filename='moment-1.6.2.min.js') }}"></script>
+<script src="{{ url_for('static', filename='moment.min.js') }}"></script>
 <script src="{{ url_for('static', filename='punycode.min.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}" />
 {% endblock %}
@@ -11,7 +11,7 @@
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     <h1>Minecraft Server Status{% if config.ENV is defined %} [{{ config.ENV }}]{% endif %}</h1>
     <form id="frm">
-    <p><label for="server">Server: </label><input type="text" name="server" value=""> <input type="submit" id="golink" value="Check" /> <img id="spinner" src="{{ url_for('static', filename='spinner.gif') }}" width="16" height="16" /></p>
+    <p><label for="server">Server: </label><input type="text" name="server" value=""> <input type="submit" id="golink" value="Check" /> <img id="spinner" src="{{ url_for('static', filename='spinner.gif') }}" width="16" height="16" /> <span id="nextrefresh"></span></p>
     </form>
     <div id="player-meter">
       <div id="meter-bar" style="width:0%;">

@@ -13,6 +13,7 @@ if up
 * protocol version (as int)
 * timestamp of data
 * reference timestamp of request
+* minimum refresh interval (as int, in seconds)
 
 ```json
 {
@@ -25,7 +26,8 @@ if up
     "protocol_version": 49,
     "server_version": "1.4.5",
     "timestamp": "2012-04-17T16:21:14.435000+00:00", 
-    "reference_timestamp": "2012-04-17T16:21:14.435000+00:00"
+    "reference_timestamp": "2012-04-17T16:21:14.435000+00:00",
+    "min_refresh_interval": 60
 }
 ```
 
@@ -34,6 +36,7 @@ if down:
 * last time up
 * timestamp of data
 * reference timestamp of request
+* minimum refresh interval (as int, in seconds)
 
 ```json
 {
@@ -41,7 +44,8 @@ if down:
     "server": "p.nerd.nu", 
     "status": "down", 
     "timestamp": "2012-04-17T16:21:14.435000+00:00", 
-    "reference_timestamp": "2012-04-17T16:21:14.435000+00:00"
+    "reference_timestamp": "2012-04-17T16:21:14.435000+00:00",
+    "min_refresh_interval": 60
 }
 ```
 
