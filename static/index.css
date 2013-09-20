@@ -1,3 +1,13 @@
+body {
+    font-size: 100%;
+    line-height: 1.125em;
+    font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+pre, tt, code, kbd, samp {
+    font-family: Consolas, monaco, monospace;
+}
+
 .status-up {
     color: #090;
 }
