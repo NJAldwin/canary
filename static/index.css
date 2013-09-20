@@ -1,6 +1,10 @@
 body {
     font-size: 100%;
     line-height: 1.125em;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
     font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
 }
 
