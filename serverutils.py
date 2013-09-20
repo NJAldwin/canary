@@ -187,10 +187,13 @@ def check(server):
 
             fl.release()
 
-        # Ensure correct server name
-        # (Servers sharing an IP may have a different domain name in the saved data)
         if not "error" in data:
+            # Ensure correct server name
+            # (Servers sharing an IP may have a different domain name in the saved data)
             data["server"] = server
+
+            # Add extra info
+            data["min_refresh_interval"] = config['TIME_BETWEEN']
 
         # if the file is already locked
         # this will return the old data
@@ -199,6 +202,7 @@ def check(server):
 
 
 class filelock:
+
     """ A primitive exclusive lock on a file. """
 
     def __init__(self, filename):
