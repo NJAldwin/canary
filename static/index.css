@@ -55,3 +55,11 @@ pre, tt, code, kbd, samp {
 abbr {
     border-bottom: 1px dotted #000;
 }
+
+.warnmsg {
+    color: #9f6000;
+    background-color: #feefb3;
+    border: 1px solid;
+    margin: 10px 0px;
+    padding: 5px;
+}
