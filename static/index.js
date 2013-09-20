@@ -86,6 +86,8 @@ $(function() {
             getData();
         }
     }); 
+    jQuery.timeago.settings.allowFuture = true;
+    jQuery.timeago.settings.refreshMillis = 1000;
     jQuery("abbr.timeago").timeago();
     $("#spinner").hide();
     $('input[name="server"]').focus();
