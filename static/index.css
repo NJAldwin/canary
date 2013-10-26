@@ -62,4 +62,5 @@ abbr {
     border: 1px solid;
     margin: 10px 0px;
     padding: 5px;
+    max-width: 500px;
 }
