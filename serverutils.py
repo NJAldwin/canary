@@ -6,6 +6,7 @@ import json
 from datetime import datetime, timedelta
 import re
 import socket
+import struct
 from xml.sax.saxutils import escape
 from canary import config
 
@@ -18,6 +19,33 @@ safemotd = {'"': '&quot;',
 
 MAX_DOMAIN_LEN = 255
 
+STR_ENCODING = 'utf-16be'
+PROTOCOL_VER = 78
+
+
+def connect_socket(host, port):
+    """ Connect a socket to the given host and port; return the socket. """
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(config['TIMEOUT'])
+    s.connect((host, port))
+    return s
+
+
+def enc_string(s):
+    """ Encode a string in STR_ENCODING and prepend with its length in a short. """
+    return struct.pack('!h', len(s)) + s.encode(STR_ENCODING)
+
+
+def gen_pinghost_packet(host, port):
+    """ Generate a PingHost PluginMessage packet """
+    pkt = '\xfa'
+    pkt += enc_string('MC|PingHost')
+    pkt += struct.pack('!h', 7 + 2 * len(host))
+    pkt += struct.pack('b', PROTOCOL_VER)
+    pkt += enc_string(host)
+    pkt += struct.pack('!i', port)
+    return pkt
+
 
 def get_info(host, port):
     """ Get information about a Minecraft server """
@@ -26,16 +54,22 @@ def get_info(host, port):
     # http://www.wiki.vg/Protocol#Server_List_Ping_.280xFE.29
     # http://www.wiki.vg/Server_List_Ping
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(config['TIMEOUT'])
-    s.connect((host, port))
+    s = connect_socket(host, port)
 
     s.send('\xfe\x01')
+    # 1.6 protocol addition: plugin message packet
+    s.send(gen_pinghost_packet(host, port))
     d = s.recv(256)
     s.close()
+    if not len(d):
+        # Really old servers don't understand the pinghost packet
+        s = connect_socket(host, port)
+        s.send('\xfe\x01')
+        d = s.recv(256)
+        s.close()
     assert d[0] == '\xff'
 
-    d = d[3:].decode('utf-16be')
+    d = d[3:].decode(STR_ENCODING)
 
     res = {'motd': '',
            'players': -1,
@@ -44,7 +78,7 @@ def get_info(host, port):
            'server_version': ''}
 
     if d[:3] == u'\xa7\x31\x00':
-        # new protocol (>= 1.4)
+        # newish protocol (>= 1.4)
 
         d = d[3:].split(u'\x00')
 
