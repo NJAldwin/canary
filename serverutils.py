@@ -19,8 +19,25 @@ safemotd = {'"': '&quot;',
 
 MAX_DOMAIN_LEN = 255
 
-STR_ENCODING = 'utf-16be'
-PROTOCOL_VER = 78
+STR_ENCODING_BEFORE_1_7 = 'utf-16be'
+PROTOCOL_VER_BEFORE_1_7 = 78
+STR_ENCODING_1_7 = 'utf8'
+PROTOCOL_VER_1_7 = 4
+
+DEFAULT_JSON = \
+    {
+        'description': {
+            'text': ''
+        },
+        'players': {
+            'max': -1,
+            'online': -1
+        },
+        'version': {
+            'name': '',
+            'protocol': -1
+        }
+    }
 
 
 def connect_socket(host, port):
@@ -31,9 +48,41 @@ def connect_socket(host, port):
     return s
 
 
+def enc_varint(num):
+    """ Encode an integer as a varint. """
+    out = ""
+    while True:
+        # Encode each group of 7 bits as one byte
+        # (set the MSB if it's the last byte)
+        byte = num & 0x7F
+        num >>= 7
+        out += struct.pack("B", byte | (0x80 if num > 0 else 0))
+        if num == 0:
+            break
+    return out
+
+
+def read_varint(sock):
+    """ Read and decode one varint from the socket. """
+    varint = 0
+    for i in xrange(9):
+        # Decode each byte as 7 bits
+        # (reaching a set MSB means it's the last byte)
+        byte = ord(sock.recv(1))
+        varint |= (byte & 0x7F) << 7 * i
+        if not byte & 0x80:
+            break
+    return varint
+
+
+def enc_data(s):
+    """ Encode the data by prepending a varint length prefix. """
+    return enc_varint(len(s)) + s
+
+
 def enc_string(s):
-    """ Encode a string in STR_ENCODING and prepend with its length in a short. """
-    return struct.pack('!h', len(s)) + s.encode(STR_ENCODING)
+    """ Encode a string in STR_ENCODING_BEFORE_1_7 and prepend with its length in a short. """
+    return struct.pack('!h', len(s)) + s.encode(STR_ENCODING_BEFORE_1_7)
 
 
 def gen_pinghost_packet(host, port):
@@ -41,7 +90,7 @@ def gen_pinghost_packet(host, port):
     pkt = '\xfa'
     pkt += enc_string('MC|PingHost')
     pkt += struct.pack('!h', 7 + 2 * len(host))
-    pkt += struct.pack('b', PROTOCOL_VER)
+    pkt += struct.pack('b', PROTOCOL_VER_BEFORE_1_7)
     pkt += enc_string(host)
     pkt += struct.pack('!i', port)
     return pkt
@@ -54,6 +103,58 @@ def get_info(host, port):
     # http://www.wiki.vg/Protocol#Server_List_Ping_.280xFE.29
     # http://www.wiki.vg/Server_List_Ping
 
+    res = DEFAULT_JSON
+    # Try old protocol first
+    # (older servers barf and then refuse a second request if they get the new-style request first)
+    # This does result in 2 pings to each server, though :|
+    # Another possibility is waiting some # of seconds in between requests.
+    # Neither seems ideal...
+    try:
+        ores = get_info_before_1_7(host, port)
+    except:
+        ores = res
+    try:
+        res = get_info_1_7(host, port)
+    except:
+        res = ores
+    return res
+
+
+def get_info_1_7(host, port):
+    """ Get information about a Minecraft 1.7+ server """
+    s = connect_socket(host, port)
+
+    s.send(enc_data("\x00\x00" + enc_data(host.encode(STR_ENCODING_1_7))
+           + struct.pack('>H', port) + "\x01"))
+    s.send(enc_data("\x00"))
+
+    plen = read_varint(s)
+    pid = read_varint(s)
+    slen = read_varint(s)
+
+    jsonstr = ""
+    nread = 0
+    print plen
+    while nread < slen:
+        chunk = s.recv(1024)
+        jsonstr += chunk
+        nread += len(chunk)
+
+    s.close()
+
+    res = DEFAULT_JSON.copy()
+    sres = json.loads(jsonstr.decode('utf8'))
+    res.update(sres)
+
+    # Some servers (modded bukkit?) return description in a non-standard way
+    if not isinstance(res['description'], dict):
+        res['description'] = {'text': res['description']}
+
+    return res
+
+
+def get_info_before_1_7(host, port):
+    """ Get information about a Minecraft <1.7 server """
     s = connect_socket(host, port)
 
     s.send('\xfe\x01')
@@ -69,21 +170,8 @@ def get_info(host, port):
         s.close()
     assert d[0] == '\xff'
 
-    d = d[3:].decode(STR_ENCODING)
-    res = \
-        {
-            'description': {
-                'text': ''
-            },
-            'players': {
-                'max': -1,
-                'online': -1
-            },
-            'version': {
-                'name': '',
-                'protocol': -1
-            }
-        }
+    d = d[3:].decode(STR_ENCODING_BEFORE_1_7)
+    res = DEFAULT_JSON
 
     if d[:3] == u'\xa7\x31\x00':
         # newish protocol (>= 1.4)
