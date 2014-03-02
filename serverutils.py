@@ -70,12 +70,20 @@ def get_info(host, port):
     assert d[0] == '\xff'
 
     d = d[3:].decode(STR_ENCODING)
-
-    res = {'motd': '',
-           'players': -1,
-           'max_players': -1,
-           'protocol_version': -1,
-           'server_version': ''}
+    res = \
+        {
+            'description': {
+                'text': ''
+            },
+            'players': {
+                'max': -1,
+                'online': -1
+            },
+            'version': {
+                'name': '',
+                'protocol': -1
+            }
+        }
 
     if d[:3] == u'\xa7\x31\x00':
         # newish protocol (>= 1.4)
@@ -85,15 +93,15 @@ def get_info(host, port):
         dlen = len(d)
 
         if dlen > 0:
-            res['protocol_version'] = int(d[0])
+            res['version']['protocol'] = int(d[0])
         if dlen > 1:
-            res['server_version'] = d[1]
+            res['version']['name'] = d[1]
         if dlen > 2:
-            res['motd'] = escape(d[2], safemotd)
+            res['description']['text'] = escape(d[2], safemotd)
         if dlen > 3:
-            res['players'] = int(d[3])
+            res['players']['online'] = int(d[3])
         if dlen > 4:
-            res['max_players'] = int(d[4])
+            res['players']['max'] = int(d[4])
 
     else:
         # old protocol (< 1.4)
@@ -105,11 +113,11 @@ def get_info(host, port):
         dlen = len(d)
 
         if dlen > 0:
-            res['motd'] = escape(d[0], safemotd)
+            res['description']['text'] = escape(d[0], safemotd)
         if dlen > 1:
-            res['players'] = int(d[1])
+            res['players']['online'] = int(d[1])
         if dlen > 2:
-            res['max_players'] = int(d[2])
+            res['players']['max'] = int(d[2])
 
     return res
 
@@ -198,11 +206,9 @@ def check(server):
 
             if len(s) > 0:
                 ndata["status"] = "up"
-                ndata["motd"] = s["motd"]
+                ndata["description"] = s["description"]
                 ndata["players"] = s["players"]
-                ndata["max_players"] = s["max_players"]
-                ndata["server_version"] = s["server_version"]
-                ndata["protocol_version"] = s["protocol_version"]
+                ndata["version"] = s["version"]
             else:
                 ndata["status"] = "down"
 
