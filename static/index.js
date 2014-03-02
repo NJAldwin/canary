@@ -19,17 +19,19 @@ $(function() {
 
             motd = ""
             if(data.status == "up") {
-                if(data.max_players <= 0) {
+                if(!data.players || data.players.max <= 0) {
                     unknownData = true;
                     pct = 100;
                     pl = "???";
                 } else {
-                    pct = 100 * Math.min(data.players / data.max_players, 1);
+                    pct = 100 * Math.min(data.players.online / data.players.max, 1);
                     nearMax = (pct >= WARN_THRESHOLD);
-                    pl = data.players + "/" + data.max_players;
+                    pl = data.players.online + "/" + data.players.max;
                 }
                 pl = pl + " players";
-                motd = " [" + data.server_version + "] (" + data.motd + ")"
+                sname = data.version ? data.version.name : "???";
+                sdesc = data.description ? data.description.text : "???";
+                motd = " [" + data.version.name + "] (" + data.description.text + ")";
                 down = false;
                 docTitle += pl;
             } else {
