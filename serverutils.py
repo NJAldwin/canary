@@ -24,20 +24,22 @@ PROTOCOL_VER_BEFORE_1_7 = 78
 STR_ENCODING_1_7 = 'utf8'
 PROTOCOL_VER_1_7 = 4
 
-DEFAULT_JSON = \
-    {
-        'description': {
-            'text': ''
-        },
-        'players': {
-            'max': -1,
-            'online': -1
-        },
-        'version': {
-            'name': '',
-            'protocol': -1
+
+def _default_json():
+    return \
+        {
+            'description': {
+                'text': ''
+            },
+            'players': {
+                'max': -1,
+                'online': -1
+            },
+            'version': {
+                'name': '',
+                'protocol': -1
+            }
         }
-    }
 
 
 def connect_socket(host, port):
@@ -103,7 +105,9 @@ def get_info(host, port):
     # http://www.wiki.vg/Protocol#Server_List_Ping_.280xFE.29
     # http://www.wiki.vg/Server_List_Ping
 
-    res = DEFAULT_JSON
+    res = _default_json()
+    valid = False
+
     # Try old protocol first
     # (older servers barf and then refuse a second request if they get the new-style request first)
     # This does result in 2 pings to each server, though :|
@@ -111,13 +115,16 @@ def get_info(host, port):
     # Neither seems ideal...
     try:
         ores = get_info_before_1_7(host, port)
+        valid = True
     except:
         ores = res
     try:
         res = get_info_1_7(host, port)
+        valid = True
     except:
         res = ores
-    return res
+
+    return res if valid else {}
 
 
 def get_info_1_7(host, port):
@@ -142,7 +149,7 @@ def get_info_1_7(host, port):
 
     s.close()
 
-    res = DEFAULT_JSON.copy()
+    res = _default_json()
     sres = json.loads(jsonstr.decode('utf8'))
     res.update(sres)
 
@@ -171,7 +178,7 @@ def get_info_before_1_7(host, port):
     assert d[0] == '\xff'
 
     d = d[3:].decode(STR_ENCODING_BEFORE_1_7)
-    res = DEFAULT_JSON
+    res = _default_json()
 
     if d[:3] == u'\xa7\x31\x00':
         # newish protocol (>= 1.4)
